@@ -1,7 +1,6 @@
 import Vue from 'vue';
 // 全局引入vuetouter
 import VueRouter from 'vue-router';
-
 // 定义路由组件
 import Tabbar from '../views/Tabbar';
 //列表
@@ -57,14 +56,10 @@ const routes = [{
         }
       },
     ],
-    // 局部守卫
-    // beforeEnter: (to, from, next) => {
-    //     // ...
-    // }
   },
   {
     name: 'cart',
-    path: '/cart',
+    path: '/cart/:listid',
     component: Cart,
   },
   // 重定向
@@ -92,30 +87,23 @@ const router = new VueRouter({
 
 // 要进入路由，都要先通过这个守卫
 
-// router.beforeEach(async (to, from, next) => {
-//     const data = await axios.post('https://www.easy-mock.com/mock/5d3fe0fc738f621651cd1f4a/list/login', {
-//         params: {
-//             // 存在cookie里面
-//             // 用token代替你的用户名和密码
-//             token: 'ahsdioasydhkaujhdaskj'
-//         }
-//     })
-//     let isLogin = data.data.data.status
-//     // 如果你没登陆你就进sign
-//     // 如果你登陆 next
-
-//     // 如果你登陆了你就next
-//     // 或者你就要去登陆页，你也可以next
-
-//     // 如果你是首页，详情页，登录页或者你登陆了，都可以进去，否则不给你进去
-//     if (isLogin || to.path === '/sign' || to.path === '/tabbar/home' || to.name === 'detail') {
-//         next()
-//     } else {
-//         // 编程式导航
-//         router.push({
-//             name: 'sign'
-//         })
-//     }
-
-// })
+router.beforeEach(async (to, from, next) => {
+  function getCookie(key) {//获取cookie值
+    var cookies = document.cookie;
+    var arr = cookies.split('; ');
+    for (var i = 0; i < arr.length; i++) {
+      var arr2 = arr[i].split('=');
+      if (key == arr2[0]) {
+        return arr2[1];
+      }
+    }
+  }
+  // console.log(getCookie('username'));
+  let islogin = getCookie('username') ? true : false;
+  if ((to.path === '/sign' || to.path === '/tabbar/home' || to.name === 'detail') && !islogin) {
+    router.push({ name: 'sign' })
+  } else {
+    next();
+  }
+})
 export default router;

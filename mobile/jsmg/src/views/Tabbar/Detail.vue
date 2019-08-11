@@ -41,13 +41,13 @@
           <span class="s-activity-notice">开通【乐卡分期】,即赠50元购物券，再享12期免息！，去凑单 &gt;</span>
         </a>
       </div>
-      <!-- 弹出层 -->
       <van-goods-action>
         <van-goods-action-icon icon="chat-o" text="客服" @click="onClickIcon" />
         <van-goods-action-icon icon="cart-o" text="购物车" @click="onClickIcon"/>
         <van-goods-action-button text="加入购物车" @click="onClickButton" />
         <van-goods-action-button type="info" text="立即购买" @click="onClickButton" />
       </van-goods-action>
+            <!-- 弹出层 -->
       <van-sku 
       v-model="show" 
       :sku="sku" 
@@ -57,7 +57,7 @@
         :hide-stock="sku.hide_stock" 
         :close-on-click-overlay="sku.close_on_click_overlay"
         @buy-clicked="onBuyClicked" 
-        @add-cart="onAddCartClicked" />
+        @add-cart="onAddCartClicked(listid)" />
     </div>
   </div>
 </template>
@@ -65,7 +65,7 @@
   export default {
     data() {
       return {
-        listid:this.$route. params.listid,
+        listid:this.$route.params.listid,
         srcs:[],
         quota: 0,
         show: false,
@@ -73,35 +73,35 @@
           tree: [{
             k: "尺寸", // skuKeyName：规格类目名称
             v: [{
-                id: '1138',
+                id: '138',
                 name: "38", // skuValueName：规格值名称
               },
               {
-                id: '1139',
+                id: '139',
                 name: "39",
               },
               {
-                id: '1140',
+                id: '140',
                 name: "40",
               },
               {
-                id: '1141',
+                id: '141',
                 name: "41",
               },
               {
-                id: '1142',
+                id: '142',
                 name: "42",
               },
               {
-                id: '1143',
+                id: '143',
                 name: "43",
               },
               {
-                id: '1144',
+                id: '144',
                 name: "44",
               },
               {
-                id: '1145',
+                id: '145',
                 name: "45",
               },
             ],
@@ -111,56 +111,56 @@
           list: [{
               id: 2259,
               price: 120, //价格单位分
-              s2: '1138',
+              s2: '138',
               stock_num: 20, //库存 
               goods_id: 946755
             },
             {
               id: 2260,
               price: 120,
-              s2: '1139',
+              s2: '139',
               stock_num: 2, 
               goods_id: 946755
             },
             {
               id: 2261,
               price: 120,
-              s2: '1140',
+              s2: '140',
               stock_num: 40, 
               goods_id: 946755
             },
             {
               id: 2262,
               price: 120,
-              s2: '1141',
+              s2: '141',
               stock_num: 50,
               goods_id: 946755
             },
              {
               id: 2263,
               price: 120,
-              s2: '1142',
+              s2: '142',
               stock_num: 5, 
               goods_id: 946755
             },
              {
               id: 2264,
               price: 120,
-              s2: '1143',
+              s2: '143',
               stock_num: 12,
               goods_id: 946755
             },
              {
               id: 2265,
               price: 120,
-              s2: '1144',
+              s2: '144',
               stock_num: 5, 
               goods_id: 946755
             },
                {
               id: 2266,
               price: 120,
-              s2: '1145',
+              s2: '145',
               stock_num:20, 
               goods_id: 946755
             }],
@@ -193,10 +193,17 @@
         this.show = !this.show;
       },
       onBuyClicked() {},
-      onAddCartClicked() {}
+      onAddCartClicked(listid) {
+        this.$router.push({
+          name: "cart",
+           params: {
+            listid
+          }
+        })
+      }
     },
     // 接收路由组建传给我的props
-    props: ["default", "sidebar"],
+    // props: ["default", "sidebar"],
     // created() {},
     // computed: {}
   };

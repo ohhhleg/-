@@ -7,9 +7,17 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+
 var app = express();
 
 // view engine setup
+app.all('*', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');//的允许所有域名的端口请求（跨域解决）
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Methods', '*');
+  res.header('Content-Type', 'application/json;charset=utf-8');
+  next();
+});
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 

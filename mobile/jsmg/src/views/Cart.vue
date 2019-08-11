@@ -19,17 +19,28 @@
     //   [SubmitBar.name]: SubmitBar,
     //   [CheckboxGroup.name]: CheckboxGroup
     // },
+  
     data() {
       return {
+        listid:this.$route.params.listid,
         checkedGoods: ['1',],
         goods: [{
           id: '1',
-          title: '进口香蕉',
-          price: 200,
+          title: 'Air Jordan 13 Lakers aj13湖人 白紫 篮球鞋 414571-105（2019.7.20发售）',
+          price: 200000,
           num: 1,
-          thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/2f9a36046449dafb8608e99990b3c205.jpeg'
+          thumb: 'http://images.dunkhome.com/product/image/10028/medium_JORDAN-ECLIPSE-414571_105_A_PREM__1_.jpg'
         }, ]
       };
+    },
+     async created() {
+      //获取数据
+      let srcs = await this.$axios.get(
+        "http://localhost:3000/test"
+      );
+      // console.log(srcs.data.filter(item => item.listid==this.listid));
+      this.srcs=srcs.data.filter(item => item.listid==this.listid);
+      console.log(this.srcs);
     },
     computed: {
       submitBarText() {

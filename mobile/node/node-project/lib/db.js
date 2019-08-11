@@ -48,10 +48,32 @@ const find = (col, params) => {
         client.close();
     })
 }
-
+// 增
+const plus = (col, params) => {
+    return new Promise(async (resolve, reject) => {
+        // 连接
+        let client = await connect();
+        // console.log("Connected successfully to server");
+        // 选中需要连接的库
+        const db = client.db(dbName);
+        // 选中表
+        const collection = db.collection(col);
+        // Find some documents
+        collection.insertOne(params,function (err, docs) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve('1');
+            }
+        });
+        // 关闭连接
+        client.close();
+    })
+}
 module.exports = {
     connect,
     find,
+    plus,
     // 根据id查找
     ObjectId
 }
