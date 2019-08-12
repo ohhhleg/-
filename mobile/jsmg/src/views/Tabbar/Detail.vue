@@ -22,8 +22,8 @@
         </div>
 
         <div class="product_labels">
-          <a >#篮球鞋</a>
-          <a >#海外折扣精选</a>
+          <a>#篮球鞋</a>
+          <a>#海外折扣精选</a>
         </div>
       </div>
 
@@ -43,21 +43,16 @@
       </div>
       <van-goods-action>
         <van-goods-action-icon icon="chat-o" text="客服" @click="onClickIcon" />
-        <van-goods-action-icon icon="cart-o" text="购物车" @click="onClickIcon"/>
+        <van-goods-action-icon icon="cart-o" text="购物车" @click="onClickIcon" />
         <van-goods-action-button text="加入购物车" @click="onClickButton" />
         <van-goods-action-button type="info" text="立即购买" @click="onClickButton" />
       </van-goods-action>
-            <!-- 弹出层 -->
-      <van-sku 
-      v-model="show" 
-      :sku="sku" 
-      :goods="goods" 
-      goods-id="goodsId" 
-      :quota="quota"
-        :hide-stock="sku.hide_stock" 
-        :close-on-click-overlay="sku.close_on_click_overlay"
-        @buy-clicked="onBuyClicked" 
-        @add-cart="onAddCartClicked(listid)" />
+      <!-- 弹出层 -->
+      <van-sku v-model="show" :sku="sku" :goods="goods" :goods-id="listid" :quota="quota"
+        :hide-stock="sku.hide_stock" show-add-cart-btn reset-stepper-on-hide
+        @buy-clicked="onBuyClicked" @add-cart="onAddCartClicked(listid)">
+        
+      </van-sku>
     </div>
   </div>
 </template>
@@ -65,8 +60,9 @@
   export default {
     data() {
       return {
-        listid:this.$route.params.listid,
-        srcs:[],
+        listid: this.$route.params.listid,
+        srcs: [],
+        stock: [],
         quota: 0,
         show: false,
         sku: {
@@ -108,75 +104,14 @@
             k_s: 's2'
           }],
           // 所有 sku 的组合列表，如下是：39、40、41、42
-          list: [{
-              id: 2259,
-              price: 120, //价格单位分
-              s2: '138',
-              stock_num: 20, //库存 
-              goods_id: 946755
-            },
-            {
-              id: 2260,
-              price: 120,
-              s2: '139',
-              stock_num: 2, 
-              goods_id: 946755
-            },
-            {
-              id: 2261,
-              price: 120,
-              s2: '140',
-              stock_num: 40, 
-              goods_id: 946755
-            },
-            {
-              id: 2262,
-              price: 120,
-              s2: '141',
-              stock_num: 50,
-              goods_id: 946755
-            },
-             {
-              id: 2263,
-              price: 120,
-              s2: '142',
-              stock_num: 5, 
-              goods_id: 946755
-            },
-             {
-              id: 2264,
-              price: 120,
-              s2: '143',
-              stock_num: 12,
-              goods_id: 946755
-            },
-             {
-              id: 2265,
-              price: 120,
-              s2: '144',
-              stock_num: 5, 
-              goods_id: 946755
-            },
-               {
-              id: 2266,
-              price: 120,
-              s2: '145',
-              stock_num:20, 
-              goods_id: 946755
-            }],
-          price: '1.00', // 默认价格（单位元）
-          stock_num: 227, // 商品总库存
+          list: [],
+          price: '', // 默认价格（单位元）
+          stock_num: 0 , // 商品总库存
           hide_stock: false, // 是否隐藏剩余库存
-          collection_id: 2261, // 无规格商品 skuId 取 collection_id，否则取所选 sku 组合对应的 id
-          none_sku: false, // 是否无规格商品
-          close_on_click_overlay: true //是否在点击遮罩层后关闭
+          // collection_id: 2261, // 无规格商品 skuId 取 collection_id，否则取所选 sku 组合对应的 id
+          // none_sku: false, // 是否无规格商品
         },
-        goods: {
-          // 商品标题
-          title: "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
-          // 默认商品 sku 缩略图
-          picture: "http://images.dunkhome.com/mall-product-image/image/42861/1.jpg"
-        }
+        goods: {},
       };
     },
     async created() {
@@ -185,8 +120,30 @@
         "http://localhost:3000/test"
       );
       // console.log(srcs.data.filter(item => item.listid==this.listid));
-      this.srcs=srcs.data.filter(item => item.listid==this.listid);
+      this.srcs = srcs.data.filter(item => item.listid == this.listid);
+      this.goods.title = this.srcs[0].title;
+      this.goods.picture = this.srcs[0].src;
+      this.sku.price = this.srcs[0].newpirce;
+
+      let stock = await this.$axios.get(
+        "http://localhost:3000/stock"
+      );
+      this.stock = stock.data.filter(item => item.listid == this.listid);
+
+      // console.log(this.stock);
+
+      this.stock.forEach((item, index) => {
+        const list = {};
+        list.price = this.sku.price;
+        list.stock_num =Number(item.stock);
+        list.goods_id = item.allid;
+        list.s1 = 0;
+        list.s3 = 0;
+        list.s2 = item.numid;
+        this.sku.list.push(list);
+      });
     },
+
     methods: {
       onClickIcon() {},
       onClickButton() {
@@ -196,16 +153,12 @@
       onAddCartClicked(listid) {
         this.$router.push({
           name: "cart",
-           params: {
+          params: {
             listid
           }
         })
       }
     },
-    // 接收路由组建传给我的props
-    // props: ["default", "sidebar"],
-    // created() {},
-    // computed: {}
   };
 
 </script>
